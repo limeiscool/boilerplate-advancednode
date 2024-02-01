@@ -1,8 +1,10 @@
 "use strict";
 require("dotenv").config();
+const session = require("express-session");
 const express = require("express");
 const myDB = require("./connection");
 const fccTesting = require("./freeCodeCamp/fcctesting.js");
+const passport = require("passport");
 
 const app = express();
 
@@ -14,8 +16,22 @@ app.use("/public", express.static(process.cwd() + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// set up session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
+// init passport
+passport.initialize();
+passport.session();
+
 app.route("/").get((req, res) => {
-  res.render("index");
+  res.render("index", { title: "Hello", message: "Please log in" });
 });
 
 const PORT = process.env.PORT || 3000;
