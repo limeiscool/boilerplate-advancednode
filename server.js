@@ -45,7 +45,7 @@ myDB(async (client) => {
     });
   });
 
-  //login
+  // login
   app
     .route("/login")
     .post(
@@ -55,7 +55,7 @@ myDB(async (client) => {
       }
     );
 
-  //profile
+  // profile
   app.route("/profile").get(ensureAuthenticated, (req, res) => {
     res.render("profile", { username: req.user.username });
   });
