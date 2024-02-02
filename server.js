@@ -36,7 +36,6 @@ myDB(async (client) => {
   const myDataBase = await client.db("database").collection("users");
 
   // root
-
   app.route("/").get((req, res) => {
     res.render("index", {
       title: "Connected to Database",
@@ -68,7 +67,6 @@ myDB(async (client) => {
   });
 
   // register
-
   app.route("/register").post(
     (req, res, next) => {
       myDataBase.findOne({ username: req.body.username }, (err, user) => {
