@@ -9,6 +9,7 @@ module.exports = function (app, myDataBase) {
       message: "Please login",
       showLogin: true,
       showRegistration: true,
+      showSocialAuth: true,
     });
   });
 
@@ -67,6 +68,17 @@ module.exports = function (app, myDataBase) {
       res.redirect("/profile");
     }
   );
+
+  // github social
+  app.route("/auth/github").get(passport.authenticate("github"));
+  app
+    .route("/auth/github/callback")
+    .get(
+      passport.authenticate("github", { failureRedirect: "/" }),
+      (req, res) => {
+        res.redirect("/profile");
+      }
+    );
 
   // 404 handle
   app.use((req, res, next) => {
