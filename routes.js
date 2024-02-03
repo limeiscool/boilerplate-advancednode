@@ -37,13 +37,13 @@ module.exports = function (app, myDataBase) {
   // register
   app.route("/register").post(
     (req, res, next) => {
+      const hash = bcrypt.hashSync(req.body.password, 8);
       myDataBase.findOne({ username: req.body.username }, (err, user) => {
         if (err) {
           next(err);
         } else if (user) {
           res.redirect("/");
         } else {
-          const hash = bcrypt.hashSync(req.body.password);
           myDataBase.insertOne(
             {
               username: req.body.username,
@@ -62,9 +62,6 @@ module.exports = function (app, myDataBase) {
     },
     passport.authenticate("local", { failureRedirect: "/" }),
     (req, res, next) => {
-      if (!bcrypt.compareSync(password, user.password)) {
-        return done(null, false);
-      }
       res.redirect("/profile");
     }
   );
@@ -76,9 +73,15 @@ module.exports = function (app, myDataBase) {
     .get(
       passport.authenticate("github", { failureRedirect: "/" }),
       (req, res) => {
-        res.redirect("/profile");
+        req.session.user_id = req.user.id;
+        res.redirect("/chat");
       }
     );
+
+  // chat
+  app.route("/chat").get(ensureAuthenticated, (req, res) => {
+    res.render("chat", { user: req.user });
+  });
 
   // 404 handle
   app.use((req, res, next) => {
