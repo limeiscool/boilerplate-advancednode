@@ -40,7 +40,6 @@ module.exports = function (app, myDataBase) {
         callbackURL: "http://localhost:3000/auth/github/callback",
       },
       function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         //Database logic here with callback containing your user object
         myDataBase.findOneAndUpdate(
           { id: profile.id },
